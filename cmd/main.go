@@ -11,6 +11,9 @@ import (
 func main() {
 	server := gin.Default()
 	repo := repository.NewStoreDataMap()
+
+	go repo.StartCleanupJob()
+
 	svc := service.NewInMemoryStore(repo)
 	controller := controller.NewController(svc)
 

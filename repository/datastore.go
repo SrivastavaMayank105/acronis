@@ -19,6 +19,7 @@ type DataRepository interface {
 	GetDataByKeyFromDB(key string) (Item, error)
 	DeleteDataFromListInDB(key string, value interface{}) (Item, error)
 	InsertDataIntoListInDB(key string, value interface{}) (Item, error)
+	StartCleanupJob()
 }
 
 type StoreDataMap struct {
@@ -164,4 +165,20 @@ func (repo *StoreDataMap) InsertDataIntoListInDB(key string, value interface{}) 
 	itemValue.ListValue = append(itemValue.ListValue, value)
 	repo.mockDB[key] = itemValue
 	return itemValue, nil
+}
+
+// creating a  function which will delete the data from this map after every 5 sec
+
+func (repo *StoreDataMap) StartCleanupJob() {
+	ticker := time.NewTicker(1 * time.Minute)
+	for range ticker.C {
+		repo.mutex.Lock()
+		now := time.Now()
+		for key, item := range repo.mockDB {
+			if item.ExpireTime.Before(now) {
+				delete(repo.mockDB, key)
+			}
+		}
+		repo.mutex.Unlock()
+	}
 }

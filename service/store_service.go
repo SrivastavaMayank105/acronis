@@ -36,7 +36,7 @@ func (inMemmory *InMemmoryData) InsertData(data mapper.DataInfo) (dto.StoredData
 		Key:            key,
 		DataValue:      data.Data,
 		CreationTime:   time.Now(),
-		ExpirationTime: time.Now().Add(time.Duration(5) * time.Second), // after 5 sec this will get expire, we can store this in config
+		ExpirationTime: time.Now().Add(time.Duration(1) * time.Minute), // after 1 min this will get expire, and will get deleted from map
 	}
 
 	err := inMemmory.repository.StoreDataIntoDB(respDto, key)
