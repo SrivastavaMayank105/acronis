@@ -1,0 +1,17 @@
+with-expecter: true
+packages:
+  acronis/repository:
+    config:
+      all: true
+      dir: ./mocks
+      filename: "{{.InterfaceName}}_mock.go"
+      mockname: "Mock{{.InterfaceName}}"
+      outpkg: "mocks"
+  acronis/service:
+    config:
+      all: true
+      dir: ./mocks
+      filename: "{{.InterfaceName}}_mock.go"
+      mockname: "Mock{{.InterfaceName}}"
+      outpkg: "mocks"
+  

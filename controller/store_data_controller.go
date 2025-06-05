@@ -66,7 +66,7 @@ func (c *Controller) SetData(ctx *gin.Context) {
 		return
 	}
 
-	// TODO: check if the data is empty or not , if so return error
+	// TODO: is using actual db , pass the context too
 
 	response, err := c.service.InsertData(request)
 	if err != nil {
