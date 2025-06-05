@@ -2,12 +2,17 @@ package main
 
 import (
 	"acronis/controller"
+	"acronis/repository"
+	"acronis/service"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	server := gin.Default()
+	repo := repository.NewStoreDataMap()
+	svc := service.NewInMemoryStore(repo)
+	controller := controller.NewController(svc)
 
 	api := server.Group("/api")
 	{
@@ -20,5 +25,5 @@ func main() {
 		api.PUT("/data/:key/pop", controller.PopFromList)
 	}
 
-	server.Run(":8080")
+	server.Run(":8081")
 }

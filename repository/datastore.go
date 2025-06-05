@@ -17,8 +17,8 @@ type DataRepository interface {
 	UpdateDataIntoDB(key string, data mapper.DataInfo) (Item, error)
 	GetDataFromDB() (map[string]Item, error)
 	GetDataByKeyFromDB(key string) (Item, error)
-	DeleteDataFromListInDB(key, value string) (Item, error)
-	InsertDataIntoListInDB(key, value string) (Item, error)
+	DeleteDataFromListInDB(key string, value interface{}) (Item, error)
+	InsertDataIntoListInDB(key string, value interface{}) (Item, error)
 }
 
 type StoreDataMap struct {
@@ -29,7 +29,7 @@ type StoreDataMap struct {
 type Item struct {
 	DataType     string
 	StringValue  string
-	ListValue    []string
+	ListValue    []interface{}
 	CreationTime time.Time
 	ExpireTime   time.Time
 }
@@ -53,7 +53,7 @@ func (repo *StoreDataMap) StoreDataIntoDB(data dto.StoredDataInfo, key string) e
 	case string:
 		item.DataType = "string"
 		item.StringValue = val
-	case []string:
+	case []interface{}:
 		item.DataType = "list"
 		item.ListValue = val
 	default:
@@ -92,7 +92,7 @@ func (repo *StoreDataMap) UpdateDataIntoDB(key string, data mapper.DataInfo) (It
 	if item.DataType == "string" {
 		item.StringValue = data.Data.(string)
 	} else if item.DataType == "list" {
-		item.ListValue = data.Data.([]string)
+		item.ListValue = data.Data.([]interface{})
 	} else {
 		return Item{}, errors.New("unsupported data type")
 	}
@@ -121,7 +121,7 @@ func (repo *StoreDataMap) GetDataByKeyFromDB(key string) (Item, error) {
 	return repo.mockDB[key], nil
 }
 
-func (repo *StoreDataMap) DeleteDataFromListInDB(key, value string) (Item, error) {
+func (repo *StoreDataMap) DeleteDataFromListInDB(key string, value interface{}) (Item, error) {
 	repo.mutex.Lock()
 	defer repo.mutex.Unlock()
 	itemValue, ok := repo.mockDB[key]
@@ -130,7 +130,7 @@ func (repo *StoreDataMap) DeleteDataFromListInDB(key, value string) (Item, error
 	}
 
 	if itemValue.DataType != "list" {
-		return Item{}, errors.New("Incorrect data type passed")
+		return Item{}, errors.New("incorrect data type passed")
 	}
 
 	index := -1
@@ -149,7 +149,7 @@ func (repo *StoreDataMap) DeleteDataFromListInDB(key, value string) (Item, error
 	repo.mockDB[key] = itemValue
 	return itemValue, nil
 }
-func (repo *StoreDataMap) InsertDataIntoListInDB(key, value string) (Item, error) {
+func (repo *StoreDataMap) InsertDataIntoListInDB(key string, value interface{}) (Item, error) {
 	repo.mutex.Lock()
 	defer repo.mutex.Unlock()
 	itemValue, ok := repo.mockDB[key]

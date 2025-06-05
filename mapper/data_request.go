@@ -13,7 +13,7 @@ func ValidateDataInfo(dataInfo *DataInfo) error {
 }
 
 type UpdateListData struct {
-	UpdatedValue string `json:"uptvalue"`
+	UpdatedValue interface{} `json:"uptvalue"`
 }
 
 func ValidateUpdateListData(uptLstData *UpdateListData) error {

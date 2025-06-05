@@ -15,8 +15,8 @@ type StoreData interface {
 	GetAllData() ([]dto.StoredDataInfo, error)
 	GetDataByKey(key string) (dto.StoredDataInfo, error)
 	DeleteDataByKey(key string) error
-	PushDataToList(key string, value string) (dto.StoredDataInfo, error)
-	PopDataFromList(key, value string) (dto.StoredDataInfo, error)
+	PushDataToList(key string, value interface{}) (dto.StoredDataInfo, error)
+	PopDataFromList(key string, value interface{}) (dto.StoredDataInfo, error)
 	UpdateDataByKey(key string, data mapper.DataInfo) (dto.StoredDataInfo, error)
 }
 
@@ -24,15 +24,16 @@ type InMemmoryData struct {
 	repository repository.DataRepository
 }
 
-func NewInMemoryStore() StoreData {
+func NewInMemoryStore(repo repository.DataRepository) StoreData {
 	return &InMemmoryData{
-		repository: repository.NewStoreDataMap(),
+		repository: repo,
 	}
 }
 
 func (inMemmory *InMemmoryData) InsertData(data mapper.DataInfo) (dto.StoredDataInfo, error) {
 	key := generateRandomKey()
 	respDto := dto.StoredDataInfo{
+		Key:            key,
 		DataValue:      data.Data,
 		CreationTime:   time.Now(),
 		ExpirationTime: time.Now().Add(time.Duration(5) * time.Second), // after 5 sec this will get expire, we can store this in config
@@ -90,7 +91,7 @@ func (inMemmory *InMemmoryData) DeleteDataByKey(key string) error {
 	return nil
 }
 
-func (inMemmory *InMemmoryData) PushDataToList(key string, value string) (dto.StoredDataInfo, error) {
+func (inMemmory *InMemmoryData) PushDataToList(key string, value interface{}) (dto.StoredDataInfo, error) {
 	itemResp, err := inMemmory.repository.InsertDataIntoListInDB(key, value)
 	if err != nil {
 		return dto.StoredDataInfo{}, err
@@ -100,7 +101,7 @@ func (inMemmory *InMemmoryData) PushDataToList(key string, value string) (dto.St
 	return resp, nil
 }
 
-func (inMemmory *InMemmoryData) PopDataFromList(key, value string) (dto.StoredDataInfo, error) {
+func (inMemmory *InMemmoryData) PopDataFromList(key string, value interface{}) (dto.StoredDataInfo, error) {
 
 	itemResp, err := inMemmory.repository.DeleteDataFromListInDB(key, value)
 	if err != nil {
