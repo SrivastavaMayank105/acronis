@@ -30,7 +30,7 @@ func (c *Controller) GetAllData(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, resp)
+	ctx.JSON(http.StatusOK, resp)
 }
 
 func (c *Controller) GetDataByKey(ctx *gin.Context) {
@@ -48,7 +48,7 @@ func (c *Controller) GetDataByKey(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, resp)
+	ctx.JSON(http.StatusOK, resp)
 
 }
 
@@ -105,7 +105,7 @@ func (c *Controller) UpdateData(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, response)
+	ctx.JSON(http.StatusOK, response)
 }
 
 func (c *Controller) DeleteData(ctx *gin.Context) {
@@ -153,7 +153,7 @@ func (c *Controller) PushToList(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, response)
+	ctx.JSON(http.StatusOK, response)
 }
 
 func (c *Controller) PopFromList(ctx *gin.Context) {
@@ -183,5 +183,5 @@ func (c *Controller) PopFromList(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, response)
+	ctx.JSON(http.StatusOK, response)
 }
