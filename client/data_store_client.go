@@ -125,7 +125,6 @@ func (dtc *dataStoreClient) UpdateData(ctx context.Context, key string, request 
 	}
 
 	req, err := http.NewRequest(http.MethodPut, dtc.BaseUrl+"/api/data/"+key, bytes.NewBuffer(payload))
-
 	if err != nil {
 		return nil, err
 	}
