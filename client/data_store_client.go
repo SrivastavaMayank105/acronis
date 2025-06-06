@@ -16,8 +16,8 @@ type DataStoreCLient interface {
 	GetDataByKey(ctx context.Context, key string) (*dto.StoredDataInfo, error)
 	UpdateData(ctx context.Context, key string, request interface{}) (*dto.StoredDataInfo, error)
 	DeleteData(ctx context.Context, key string) error
-	PushDataIntoList(ctx context.Context)
-	PopDataFromList(ctx context.Context)
+	PushDataIntoList(ctx context.Context, key string, value interface{}) (*dto.StoredDataInfo, error)
+	PopDataFromList(ctx context.Context, key string, value interface{}) (*dto.StoredDataInfo, error)
 }
 
 type dataStoreClient struct {
@@ -172,6 +172,68 @@ func (dtc *dataStoreClient) DeleteData(ctx context.Context, key string) error {
 
 }
 
-func (dtc *dataStoreClient) PushDataIntoList(ctx context.Context) {}
+func (dtc *dataStoreClient) PushDataIntoList(ctx context.Context, key string, value interface{}) (*dto.StoredDataInfo, error) {
+	payload, err := json.Marshal(value)
+	if err != nil {
+		return nil, err
+	}
 
-func (dtc *dataStoreClient) PopDataFromList(ctx context.Context) {}
+	req, err := http.NewRequest(http.MethodPut, dtc.BaseUrl+"/api/data/"+key+"/push", bytes.NewBuffer(payload))
+
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := dtc.HttpClinet.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, errors.New("failed to push value into list")
+	}
+
+	respBody, _ := io.ReadAll(resp.Body)
+	var result dto.StoredDataInfo
+	if err := json.Unmarshal(respBody, &result); err != nil {
+		return nil, errors.New("failed to unmarshal push response")
+	}
+
+	return &result, nil
+
+}
+
+func (dtc *dataStoreClient) PopDataFromList(ctx context.Context, key string, value interface{}) (*dto.StoredDataInfo, error) {
+	payload, err := json.Marshal(value)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, dtc.BaseUrl+"/api/data/"+key+"/pop", bytes.NewBuffer(payload))
+
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := dtc.HttpClinet.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, errors.New("failed to push value into list")
+	}
+
+	respBody, _ := io.ReadAll(resp.Body)
+	var result dto.StoredDataInfo
+	if err := json.Unmarshal(respBody, &result); err != nil {
+		return nil, errors.New("failed to unmarshal push response")
+	}
+
+	return &result, nil
+
+}
