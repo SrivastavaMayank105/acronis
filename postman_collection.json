@@ -1,0 +1,141 @@
+{
+  "info": {
+    "name": "InMemory DataStore APIs",
+    "_postman_id": "c69e06cb-3c70-40a7-86df-8cbab997e10c",
+    "description": "A lightweight in-memory key-value store REST API like Redis, with TTL support.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "POST Set Data (String or List)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"data\": \"Mayank\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8081/api/data",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8081",
+          "path": ["api", "data"]
+        }
+      }
+    },
+    {
+      "name": "GET All Data",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8081/api/data",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8081",
+          "path": ["api", "data"]
+        }
+      }
+    },
+    {
+      "name": "GET Data by Key",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8081/api/data/key_1234",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8081",
+          "path": ["api", "data", "key_1234"]
+        }
+      }
+    },
+    {
+      "name": "PUT Update Data by Key",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"data\": [\"Mayank updated\"]\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8081/api/data/key_1234",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8081",
+          "path": ["api", "data", "key_1234"]
+        }
+      }
+    },
+    {
+      "name": "DELETE Data by Key",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "http://localhost:8081/api/data/key_1234",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8081",
+          "path": ["api", "data", "key_1234"]
+        }
+      }
+    },
+    {
+      "name": "PUT Push Value to List",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"uptvalue\": \"new value added\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8081/api/data/key_1234/push",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8081",
+          "path": ["api", "data", "key_1234", "push"]
+        }
+      }
+    },
+    {
+      "name": "PUT Pop Value from List",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"uptvalue\": \"1.2\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8081/api/data/key_1234/pop",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8081",
+          "path": ["api", "data", "key_1234", "pop"]
+        }
+      }
+    }
+  ]
+}

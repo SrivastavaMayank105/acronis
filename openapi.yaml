@@ -1,0 +1,183 @@
+openapi: 3.0.3
+info:
+  title: InMemory Data Store API
+  version: "1.0"
+  description: |
+    Simple in-memory storage API similar to Redis. 
+    Supports string or list data types and basic operations like set, update, delete, push, pop.
+
+servers:
+  - url: http://localhost:8081
+
+paths:
+  /api/data:
+    post:
+      summary: "Set data"
+      description: "Store data as a string or list of values"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  oneOf:
+                    - type: string
+                    - type: array
+                      items:
+                        type: string
+              required:
+                - data
+      responses:
+        '200':
+          description: "Data stored successfully"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StoredDataInfo'
+    get:
+      summary: "Get all stored data"
+      responses:
+        '200':
+          description: "List of all stored data"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StoredDataInfo'
+
+  /api/data/{key}:
+    get:
+      summary: "Fetch data for a specific key"
+      parameters:
+        - in: path
+          name: key
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "Data found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StoredDataInfo'
+    put:
+      summary: "Update data for a key"
+      parameters:
+        - in: path
+          name: key
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  oneOf:
+                    - type: string
+                    - type: array
+                      items:
+                        type: string
+              required:
+                - data
+      responses:
+        '200':
+          description: "Data updated"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StoredDataInfo'
+    delete:
+      summary: "Delete data by key"
+      parameters:
+        - in: path
+          name: key
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: "Data deleted successfully"
+
+  /api/data/{key}/push:
+    put:
+      summary: "Push value to list data"
+      parameters:
+        - in: path
+          name: key
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                uptvalue:
+                  type: string
+              required:
+                - uptvalue
+      responses:
+        '200':
+          description: "Value pushed to list"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StoredDataInfo'
+
+  /api/data/{key}/pop:
+    put:
+      summary: "Pop value from list data"
+      parameters:
+        - in: path
+          name: key
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                uptvalue:
+                  type: string
+              required:
+                - uptvalue
+      responses:
+        '200':
+          description: "Value popped from list"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StoredDataInfo'
+
+components:
+  schemas:
+    StoredDataInfo:
+      type: object
+      properties:
+        key:
+          type: string
+        datavalue:
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+        creation_time:
+          type: string
+          format: date-time
+        expiration_time:
+          type: string
+          format: date-time

@@ -1,0 +1,73 @@
+Client Library API Documentation
+===============================
+
+Package: client
+
+Provides a Go client for interacting with the InMemory Data Store REST API.
+
+----------------------------------------------------
+
+Installation:
+-------------
+go get github.com/yourusername/inmemstore/client
+
+----------------------------------------------------
+
+Available Methods:
+------------------
+
+1. NewDataStoreClient(baseURL string) DataStoreClient
+   - Creates a new client instance.
+   - Parameters:
+     - baseURL : The base URL for the REST API server.
+   - Returns:
+     - DataStoreClient instance.
+
+2. SetData(ctx context.Context, request interface{}) (*dto.StoredDataInfo, error)
+   - Sends a POST request to set a new value (string or list).
+   - Parameters:
+     - ctx : context
+     - request : string or []interface{} representing data.
+   - Returns:
+     - StoredDataInfo containing key, value, and timestamps.
+     - error if operation fails.
+
+3. GetData(ctx context.Context, key string) (*dto.StoredDataInfo, error)
+   - Fetches a value by key.
+
+4. UpdateData(ctx context.Context, key string, request interface{}) (*dto.StoredDataInfo, error)
+   - Updates a value by key.
+
+5. DeleteData(ctx context.Context, key string) error
+   - Deletes a value by key.
+
+6. PushData(ctx context.Context, key string, value string) (*dto.StoredDataInfo, error)
+   - Adds a value to an existing list.
+
+7. PopData(ctx context.Context, key string, value string) (*dto.StoredDataInfo, error)
+   - Removes a value from an existing list.
+
+----------------------------------------------------
+
+Usage Example:
+--------------
+
+client := client.NewDataStoreClient("http://localhost:8081")
+ctx := context.TODO()
+
+// Set string data
+info, err := client.SetData(ctx, "hello world")
+
+// Set list data
+listInfo, err := client.SetData(ctx, []interface{}{"item1", "item2"})
+
+// Fetch data
+data, err := client.GetData(ctx, info.Key)
+
+// Update data
+updated, err := client.UpdateData(ctx, info.Key, "new value")
+
+// Delete data
+err := client.DeleteData(ctx, info.Key)
+
+----------------------------------------------------
