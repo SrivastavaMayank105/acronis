@@ -30,4 +30,5 @@ It provides a RESTful API to store, update, retrieve, and delete key-value data 
 
 ## How to run this project
 - run go run cmd/main.go : this will run it on localhost at port 8081
-- run the go run client_main.go : to run the client function. I have added the example of those client function in it. 
+- run the go run client_main.go : to run the client function. I have added the example of those client function in it.
+- The ttl for a message is 1 min that is message will get remove from map after 1 min.
